@@ -6,36 +6,15 @@ folder_raw = input('Enter a file path:\n')
 folder = ''
 for char in folder_raw:
     folder += char.replace('\\', '/')
-if os.path.isdir(f'{folder}/saves') is True:
-    try:
-        os.rmdir(f'{folder}/saves')
-    except OSError:
-        print(f'{folder}/saves is not empty')
-        os.system('pause')
-        sys.exit()
-os.symlink(f'{minecraft_folder}/saves', f'{folder}/saves')
-if os.path.isdir(f'{folder}/shaderpacks') is True:
-    try:
-        os.rmdir(f'{folder}/shaderpacks')
-    except OSError:
-        print(f'{folder}/shaderpacks is not empty')
-        os.system('pause')
-        sys.exit()
-os.symlink(f'{minecraft_folder}/shaderpacks', f'{folder}/shaderpacks')
-if os.path.isdir(f'{folder}/screenshots') is True:
-    try:
-        os.rmdir(f'{folder}/screenshots')
-    except OSError:
-        print(f'{folder}/screenshots is not empty')
-        os.system('pause')
-        sys.exit()
-os.symlink(f'{minecraft_folder}/screenshots', f'{folder}/screenshots')
-if os.path.isdir(f'{folder}/resourcepacks') is True:
-    try:
-        os.rmdir(f'{folder}/resourcepacks')
-    except OSError:
-        print(f'{folder}/resourcepacks is not empty')
-        os.system('pause')
-        sys.exit()
-os.symlink(f'{minecraft_folder}/resourcepacks', f'{folder}/resourcepacks')
+subfolders = [f'{folder}/saves', f'{folder}/shaderpacks', f'{folder}/screenshots', f'{folder}/resourcepacks']
+minecraft_subfolders = [f'{minecraft_folder}/saves', f'{minecraft_folder}/shaderpacks', f'{minecraft_folder}/screenshots', f'{minecraft_folder}/resourcepacks']
+for subfolder, minecraft_subfolder in zip(subfolders, minecraft_subfolders,):
+    if os.path.isdir(subfolder) is True:
+        try:
+            os.rmdir(subfolder)
+        except OSError:
+            print(subfolder, ' is not empty')
+            os.system('pause')
+            sys.exit()
+    os.symlink(minecraft_subfolder, subfolder)
 os.system('pause')
