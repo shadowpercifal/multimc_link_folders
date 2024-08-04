@@ -25,14 +25,19 @@ def multimc_folder_select(config):
             config['multimc_folder_i'] = True
             config['multimc_folder'] = user_input
             config['multimc_instances_folder'] = user_input + '/instances'
+            print('Multimc folder selected')
             if config['root_folder_i'] == False:
                 root_folder_select(config)
+                break
             else:
                 break
 
 
 def root_folder_select(config):
-    while True:
+    root_selected = 'Root folder selected'
+    exit_main = False
+    exit = False
+    while not exit_main:
         user_input = input('''1. Enter a path to miecraft root folder;
 2. Select default minecraft folder;
 3. Create main folder in multimc;
@@ -40,25 +45,27 @@ def root_folder_select(config):
 ''')
         match user_input.lower():
             case '0':
-                break
+                exit_main = True
             case 'exit':
-                break
+                exit_main = True
             case '1':
-                while True:
+                while not exit:
                     root_folder = input('Enter a minecraft folder, like "/.minecraft" or exit:\n').replace('\\', '/')
                     if root_folder == 'exit':
-                        break
+                        exit = True
                     elif not os.path.isdir(root_folder):
                         print('Enter a valid path')
                         continue
                     config['root_folder'] = root_folder
                     config['root_folder_i'] = True
-                    selector(config)
+                    exit = True
+                    print(root_selected)
             case '2':
                 root_folder = os.environ['USERPROFILE'] + '/AppData/Roaming/.minecraft'
                 config['root_folder'] = root_folder
                 config['root_folder_i'] = True
-                selector(config)
+                exit_main = True
+                print(root_selected)
             case '3':
                 os.chdir(config['multimc_folder'])
                 instances_folders = ['instances_root_folder', 'instances_root_folder/saves', 'instances_root_folder/shaderpacks',
@@ -71,7 +78,7 @@ def root_folder_select(config):
                         print(folder + ' already exist')
                 config['root_folder'] = config['multimc_folder'] + '/instances_root_folder'
                 config['root_folder_i'] = True
-                selector(config)
+                print(root_selected)
 
 
 def link(config):
@@ -86,10 +93,7 @@ def link(config):
         folder = config['multimc_instances_folder'] + '/' + user_input
         if user_input == 'exit':
             break
-        elif not os.path.isdir(folder):
-            print('Enter a valid path')
-            continue
-        else:
+        if user_input in dir_list:
             subfolders = [f'{folder}/saves', f'{folder}/shaderpacks', f'{folder}/screenshots', f'{folder}/resourcepacks']
             minecraft_subfolders = [f'{config['root_folder']}/saves', f'{config['root_folder']}/shaderpacks', f'{config['root_folder']}/screenshots', f'{config['root_folder']}/resourcepacks']
             for subfolder, minecraft_subfolder in zip(subfolders, minecraft_subfolders):
@@ -102,37 +106,47 @@ def link(config):
                         sys.exit()
                 try:
                     os.symlink(minecraft_subfolder, subfolder)
+                    print(subfolder + " linked")
                 except OSError:
                     print('Privilage error, run program with a administrator privilages')
                     break
+        elif not os.path.isdir(folder):
+            print('Enter a valid path')
 
 
 def selector(config):
-    while True:
+    exit = False
+    while not exit:
         selector = (input('1. Link folders | 2. Change multimc folder | 3. Change root folder | 0. Exit:\n'))
-        try:
-            if selector.isdigit() and int(selector) < 4 or int(selector) == 0:
-                match int(selector):
-                    case 1:
-                        link(config)
-                    case 2:
-                        multimc_folder_select(config)
-                    case 3:
-                        root_folder_select(config)
-                    case 0:
-                        os.chdir(multimc)
-                        config = json.dumps(config)
-                        with open('config.json', 'w') as f:
-                            f.write(config)
-                        break
-            else:
-                print(f'{selector} is not a selector menu')
-        except ValueError:
-            print(f"{selector} is not a number")
+        match selector:
+            case '1':
+                link(config)
+            case '2':
+                multimc_folder_select(config)
+            case '3':
+                root_folder_select(config)
+            case '0':
+                os.chdir(multimc)
+                config = json.dumps(config)
+                with open('config.json', 'w') as f:
+                    f.write(config)
+                exit = True
+            case 'exit':
+                os.chdir(multimc)
+                config = json.dumps(config)
+                with open('config.json', 'w') as f:
+                    f.write(config)
+                exit = True
 
 
 if config['multimc_folder_i'] is False:
     multimc_folder_select(config)
+if not os.path.isdir(config['multimc_instances_folder']):
+    print('Cant find multimc folder')
+    multimc_folder_select(config)
+if not os.path.isdir(config['root_folder']):
+    print('Cant find root folder')
+    root_folder_select(config)
 selector(config)
 
 os.system('pause')
