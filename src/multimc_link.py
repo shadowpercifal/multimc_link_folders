@@ -25,7 +25,10 @@ def multimc_folder_select(config):
             config['multimc_folder_i'] = True
             config['multimc_folder'] = user_input
             config['multimc_instances_folder'] = user_input + '/instances'
-            selector(config)
+            if config['root_folder_i'] == False:
+                root_folder_select(config)
+            else:
+                selector(config)
 
 
 def root_folder_select(config):
@@ -120,8 +123,7 @@ def selector(config):
                     config = json.dumps(config)
                     with open('config.json', 'w') as f:
                         f.write(config)
-                    SystemExit
-            break
+                    break
         elif selector.isalpha():
             print(f"{selector} is not a number")
         else:
@@ -130,8 +132,6 @@ def selector(config):
 
 if config['multimc_folder_i'] is False:
     multimc_folder_select(config)
-if config['root_folder_i'] is False:
-    root_folder_select(config)
 selector(config)
 
 os.system('pause')
