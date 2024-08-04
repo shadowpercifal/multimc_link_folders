@@ -17,7 +17,7 @@ def multimc_folder_select(config):
     while True:
         user_input = input('Enter a path to multimc root folder, like "/MultiMC" or exit:\n').replace('\\', '/')
         if user_input == 'exit':
-            selector(config)
+            break
         elif not os.path.isdir(user_input) or not os.path.isdir(os.path.join(user_input, "instances")):
             print('Enter a valid path')
             continue
@@ -28,7 +28,7 @@ def multimc_folder_select(config):
             if config['root_folder_i'] == False:
                 root_folder_select(config)
             else:
-                selector(config)
+                break
 
 
 def root_folder_select(config):
@@ -40,9 +40,9 @@ def root_folder_select(config):
 ''')
         match user_input.lower():
             case '0':
-                selector(config)
+                break
             case 'exit':
-                selector(config)
+                break
             case '1':
                 while True:
                     root_folder = input('Enter a minecraft folder, like "/.minecraft" or exit:\n').replace('\\', '/')
@@ -85,7 +85,7 @@ def link(config):
         user_input = input('Choose a minecraft instance or exit:\n')
         folder = config['multimc_instances_folder'] + '/' + user_input
         if user_input == 'exit':
-            selector(config)
+            break
         elif not os.path.isdir(folder):
             print('Enter a valid path')
             continue
@@ -110,24 +110,25 @@ def link(config):
 def selector(config):
     while True:
         selector = (input('1. Link folders | 2. Change multimc folder | 3. Change root folder | 0. Exit:\n'))
-        if selector.isdigit() and int(selector) < 4 or int(selector) == 0:
-            match int(selector):
-                case 1:
-                    link(config)
-                case 2:
-                    multimc_folder_select(config)
-                case 3:
-                    root_folder_select(config)
-                case 0:
-                    os.chdir(multimc)
-                    config = json.dumps(config)
-                    with open('config.json', 'w') as f:
-                        f.write(config)
-                    break
-        elif selector.isalpha():
+        try:
+            if selector.isdigit() and int(selector) < 4 or int(selector) == 0:
+                match int(selector):
+                    case 1:
+                        link(config)
+                    case 2:
+                        multimc_folder_select(config)
+                    case 3:
+                        root_folder_select(config)
+                    case 0:
+                        os.chdir(multimc)
+                        config = json.dumps(config)
+                        with open('config.json', 'w') as f:
+                            f.write(config)
+                        break
+            else:
+                print(f'{selector} is not a selector menu')
+        except ValueError:
             print(f"{selector} is not a number")
-        else:
-            print(f'{selector} is not a selector menu')
 
 
 if config['multimc_folder_i'] is False:
