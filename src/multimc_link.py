@@ -84,13 +84,13 @@ def root_folder_select(config):
 def link(config):
     dir_list = []
     for name in os.listdir(config['multimc_instances_folder']):
-        if name != 'instgroups.json':
-            if name != '_LAUNCHER_TEMP':
-                print(name)
-                dir_list.append(name)
+        if name not in ['instgroups.json', '_LAUNCHER_TEMP']:
+            print(name)
+            dir_list.append(name)
     while True:
         user_input = input('Choose a minecraft instance or exit:\n')
-        folder = config['multimc_instances_folder'] + '/' + user_input
+        folder = config['multimc_instances_folder'] + '/' + user_input + '/.minecraft'
+        print(folder)
         if user_input == 'exit':
             break
         if user_input in dir_list:
@@ -111,7 +111,7 @@ def link(config):
                     print('Privilage error, run program with a administrator privilages')
                     break
         elif not os.path.isdir(folder):
-            print('Enter a valid path')
+            print('Enter a valid version')
 
 
 def selector(config):
