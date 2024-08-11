@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import curseForge_instance_linking as cF
 
 multimc = os.getcwd()
 
@@ -117,13 +118,15 @@ def link(config):
 def selector(config):
     exit = False
     while not exit:
-        selector = (input('1. Link folders | 2. Change multimc folder | 3. Change root folder | 0. Exit:\n'))
+        selector = (input('1. Link folders | 2. Link CurseFolder instances | 3. Change multimc folder | 4. Change root folder | 0. Exit:\n'))
         match selector:
             case '1':
                 link(config)
             case '2':
-                multimc_folder_select(config)
+                cF.instance_linking(config)
             case '3':
+                multimc_folder_select(config)
+            case '4':
                 root_folder_select(config)
             case '0':
                 os.chdir(multimc)
