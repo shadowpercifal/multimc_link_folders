@@ -6,11 +6,12 @@ def instance_linking(config):
     curseforge_folder = os.path.join(os.environ['USERPROFILE'], 'curseforge/minecraft')
     curseforge_instances_folder = os.path.join(curseforge_folder, 'Instances')
     multimc_instances_folder = config['multimc_instances_folder']
+    multimc_icons = os.path.join(config['multimc_folder'], 'icons')
 
     instances_dict = {}
     instance_i = 1
-    while not os.path.isfile('C:/Launchers/MultiMC/icons/curseforge.png'):
-        os.system('curl -o curseforge.png --output-dir C:/Launchers/MultiMC/icons https://i.imgur.com/NjSxb50.png')
+    while not os.path.isfile(os.path.join(multimc_icons, 'curseforge.png')):
+        os.system(f'curl -o curseforge.png --output-dir {multimc_icons} https://i.imgur.com/NjSxb50.png')
     for instance in os.listdir(curseforge_instances_folder):
         print(f'{instance_i}. {instance}')
         instances_dict[f"{instance_i}"] = instance
@@ -19,7 +20,7 @@ def instance_linking(config):
 
     def instance_linking(folder):
         print(folder)
-        
+
         # folder and linking
         instance_folder = os.path.join(multimc_instances_folder, folder)
         instance_subfolder = os.path.join(instance_folder, '.minecraft')
